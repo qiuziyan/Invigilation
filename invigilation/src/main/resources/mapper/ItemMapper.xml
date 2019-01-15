@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="cn.njit.invigilation.dao.Dao">
+	<select id = "test" resultType = "int">
+		select
+			count(1)
+		from
+			parkingspace
+	</select>
+	
+	
+</mapper>
