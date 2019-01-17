@@ -19,7 +19,7 @@ public class TestController {
 	private Dao dao;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
-	
+	private int i;
 	@RequestMapping("/test")
 	public ModelAndView test() {
 		
