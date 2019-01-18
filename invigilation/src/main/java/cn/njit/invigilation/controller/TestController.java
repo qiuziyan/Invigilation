@@ -26,4 +26,8 @@ public class TestController {
 	public int test2() {
 		return 1;
 	}
+	
+	public String test3() {
+		return "测试成功";
+	}
 }
