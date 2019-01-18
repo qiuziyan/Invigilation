@@ -23,4 +23,7 @@ public class TestController {
 		
 		return new ModelAndView("show","name","name") ;
 	}
+	public int test2() {
+		return 1;
+	}
 }
