@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.StudentDao">
+	<resultMap type="com.org.model.Student" id="studentMap">
+		<id column="stu_no" property="stu_no"/>
+		<result column="stu_name" property="stu_name"/>
+		<result column="stu_phone" property="stu_phone"/>
+		<result column="email" property="email"/>
+		<result column="dom_name" property="dom_name"/>
+		<association property="classes" javaType="com.org.model.Classes">
+			<id column="class_id" property="class_id"/>
+			<result column="class_name" property="class_name"/>
+		</association>
+		<association property="user" javaType="com.org.model.User">
+			<id column="user_name" property="user_name"/>
+			<result column="password" property="password"/>
+		</association>
+		<association property="depart" javaType="com.org.model.Department">
+			<id column="dept_id" property="dept_id"/>
+			<result column="dept_name" property="dept_name"/>
+		</association>
+	</resultMap>
+	<select id="getStudent" resultMap="studentMap">
+		select
+			STU_NO          as    stu_no,
+			STU_NAME        as    stu_name,
+			STU_PHONE       as    stu_phone,
+			EMAIL           as    email,
+			DOM_NAME        as    dom_name,
+			c.CLASS_ID      as    class_id,
+			c.CLASS_NAME    as    class_name,
+			d.DEPT_ID       as    dept_id,
+			d.DEPT_NAME     as    dept_name,
+			u.USER_NAME     as    user_name,
+			u.PASSWORD      as    password
+		from
+			student s
+		left join
+			class c
+		on
+			s.CLASS_ID = c.CLASS_ID
+	    left join
+			department d
+	    on   
+			c.DEPT_ID=d.DEPT_ID
+		left join
+		    user u
+	    on
+			s.STU_NO=u.USER_NAME
+		where
+			s.STU_NO=#{stu_no}
+		
+	</select>
+	<select id="UniquenessCheckForStudent" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			student
+		where
+			student.STU_NO = #{stu_no}
+	</select>
+	<update id = "modifyStudent" parameterType="com.org.model.Student">
+		update student
+		set 
+			STU_NAME=#{stu_name},
+			STU_PHONE=#{stu_phone},
+			EMAIL=#{email},
+			DOM_NAME=#{dom_name}
+		where
+			STU_NO=#{stu_no}
+	</update>
+</mapper>

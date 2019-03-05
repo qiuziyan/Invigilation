@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.TeacherDao">
+	<resultMap id = "teacher" type = "com.org.model.Teacher">
+		<id property="teacher_id" column="teacher_id"></id>
+		<result property="teacher_no" column="teacher_no"></result>
+		<result property="teacher_name" column="teacher_name"></result>
+		<result property="teacher_phone" column="teacher_phone"></result>
+		<result property="email" column="email"></result>
+		<association property="section" javaType="com.org.model.Section">
+			<id property="section_id" column="section_id"></id>
+			<result property="section_name" column="section_name"></result>
+		</association>
+		<association property="depart" javaType="com.org.model.Department">
+			<id property="dept_id" column="dept_id"></id>
+			<result property="dept_name" column="dept_name"></result>
+		</association>
+	</resultMap>
+	<select id="UniquenessCheckForTeacher" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			teacher
+		where
+			teacher.TEACHER_NO = #{teacher_no}
+	</select>
+	
+	<insert id = "addTeacher" parameterType="com.org.model.Teacher" keyProperty="teacher_id" useGeneratedKeys="true">
+		insert into 
+			teacher
+		(
+		
+			SECTION_ID,
+			TEACHER_NAME,
+			TEACHER_NO,
+			TEACHER_PHONE,
+			EMAIL,
+			TEACHER_DESC
+		)
+		values(
+			#{section.section_id},
+			#{teacher_name},
+			#{teacher_no},
+			#{teacher_phone},
+			#{email},
+			'null'
+		)
+	</insert>
+	<insert id="addRequest"  parameterType="com.org.model.Req" keyProperty="req_id" useGeneratedKeys="true">
+		insert into
+			exam_req
+			(
+				EXAM_TYPE_ID,
+				COURSE_ID,
+				TEACHER_ID,
+				REQ_DATE,
+				STATUS
+			)values(
+				#{type.exam_type_id},
+				#{course.course_id},
+				#{teacher.teacher_id},
+				#{req_date},
+				#{status}
+			)
+	</insert>
+	
+	<insert id="addClassRel">
+		insert into
+			exam_req_class
+			(
+				REQ_ID,
+				CLASS_ID
+			)values
+			<foreach collection="classes" item = "class" separator=",">
+				(#{req_id}, #{class})
+			</foreach>
+	</insert>
+	<update id = "modifyteacher" parameterType="com.org.model.Teacher">
+		update teacher
+		set 
+			TEACHER_NAME =#{teacher_name},
+			TEACHER_PHONE=#{teacher_phone},
+			EMAIL = #{email}
+		where
+			TEACHER_NO= #{teacher_no}
+	</update>
+	<update id = "modifyTeacher" parameterType="com.org.model.Teacher">
+		update teacher
+		set 
+			TEACHER_NAME=#{teacher_name},
+			TEACHER_PHONE= #{teacher_phone},
+			EMAIL = #{email},
+            SECTION_ID=#{section.section_id}
+		where
+			TEACHER_NO= #{teacher_no}
+	</update>
+	
+	<select id = "getTeacherList" resultMap="teacher">
+		select 
+		    t.TEACHER_ID       as    teacher_id,
+			t.TEACHER_NO       as    teacher_no,
+			t.TEACHER_NAME     as    teacher_name,
+			t.TEACHER_PHONE     as    teacher_phone,
+			t.EMAIL    as    email,
+			s.SECTION_ID        as        section_id,
+			s.SECTION_NAME      as        section_name,
+			d.DEPT_ID           as        dept_id,
+			d.DEPT_NAME         as        dept_name
+		from
+			teacher t
+		left join
+		    teaching_section s
+		on
+		    t.SECTION_ID=s.SECTION_ID
+		left join
+		    department d
+		 on
+		    s.DEPT_ID=d.DEPT_ID
+		where 
+			1=1
+		<if test ="teacher_name != null and teacher_name != '' ">
+		And
+			t.TEACHER_NAME = #{teacher_name}
+		</if>
+	</select>
+	
+	<select id = "getsectionList" resultType="com.org.model.Section">
+		select 
+			r.SECTION_NAME   as    section_name,
+			r.SECTION_ID     as    section_id
+		from
+			teaching_section r
+		where 
+			r.DEPT_ID = #{dept_id}
+	</select>
+	
+	<delete id = "delete">
+		delete from 
+			teacher 
+		where
+			TEACHER_NO  = #{teacher_no}
+	</delete>
+	<select id="getTeacher" resultMap="teacher">
+		select 
+		    t.TEACHER_ID       as    teacher_id,
+			t.TEACHER_NO       as    teacher_no,
+			t.TEACHER_NAME     as    teacher_name,
+			t.TEACHER_PHONE    as    teacher_phone,
+			t.EMAIL            as    email,
+			s.SECTION_ID       as    section_id,
+			s.SECTION_NAME     as    section_name,
+			d.DEPT_ID          as    dept_id,
+			d.DEPT_NAME        as    dept_name
+		from
+			teacher t
+		left join
+		    teaching_section s
+		 on
+		    t.SECTION_ID=s.SECTION_ID
+		 left join
+		    department d
+		 on
+		    s.DEPT_ID=d.DEPT_ID
+		where 
+			t.TEACHER_NO  = #{teacher_no}
+	</select>
+	
+	<insert id="addFreeTime" keyProperty="id" useGeneratedKeys="true" parameterType="com.org.model.Freetime">
+		insert into
+			teacher_busy_tiem
+			(
+				TEACHER_ID,
+				WEEK,
+				STARTTIME,
+				ENDTIME
+			)values(
+				#{teacher_id},
+				#{week},
+				#{starttime},
+				#{endtime}
+			)
+	</insert>
+	
+	<select id="getFreeTimeList" resultType="com.org.model.Freetime">
+		select
+			ID                                          as    id,
+			WEEK                                        as    week,
+			DATE_FORMAT(STARTTIME,'%Y-%m-%d %H:%i')     as    starttime,
+			DATE_FORMAT(ENDTIME,'%Y-%m-%d %H:%i')       as    endtime
+		from
+			teacher_busy_tiem
+		where
+			TEACHER_ID = #{teacher_id}
+		<if test="time != null and time != '' ">
+		and
+			STARTTIME &gt; #{time}
+		</if>
+	</select>
+	
+	<delete id = "deleteFreeTime">
+		delete from
+			teacher_busy_tiem
+		where
+			ID = #{id}
+	</delete>
+	<select id ="getFreeTimeTecherList" resultType="com.org.model.Teacher">
+		select
+			t.TEACHER_ID         as    teacher_id,
+			t.TEACHER_NAME       as    teacher_name
+		from
+			teacher t
+		left join
+			teacher_busy_tiem ft
+		on
+			ft.TEACHER_ID  = t.TEACHER_ID
+		where
+			ft.STARTTIME &gt; #{end_date}
+		or
+			ft.ENDTIME &lt; #{start_date}
+		or
+			ft.ENDTIME is null
+		GROUP BY
+            t.TEACHER_ID
+	</select>
+	
+	<resultMap type="com.org.model.Req" id="Req">
+		<id column="req_id" property="req_id"></id>
+		<result column="req_date" property="req_date"/>
+		<result column="status" property="status"/>
+		<association property="teacher" javaType="com.org.model.Teacher">
+			<id column="teacher_id" property="teacher_id"/>
+			<result column="teacher_name" property="teacher_name"/>
+		</association>
+		<association property="course" javaType="com.org.model.Course">
+			<id column="course_id" property="course_id"/>
+			<result column="course_name" property="course_name"/>
+		</association>
+		<association property="type" javaType="com.org.model.Type">
+			<id column="exam_type_id" property="exam_type_id"/>
+			<result column="exam_type" property="exam_type"/>
+		</association>
+	</resultMap>
+	<select id="getRequestList" resultMap="Req">
+		select
+		    DISTINCT
+		  	r.REQ_ID               as    req_id,
+			DATE_FORMAT(r.REQ_DATE,'%Y-%m-%d')  as    req_date,
+			r.STATUS           as    status,
+	    	e.COURSE_ID        as    course_id,
+			e.COURSE_NAME      as    course_name,
+			t.EXAM_TYPE_ID     as    exam_type_id,
+			t.EXAM_TYPE        as    exam_type ,
+			a.TEACHER_ID       as    teacher_id,
+			a.TEACHER_NAME     as    teacher_name
+		from
+			exam_req r
+	  left join
+		    exam_req_class c
+		on
+		    r.REQ_ID=c.REQ_ID
+		 left join
+		    course e
+		 on  
+		     r.COURSE_ID=e.COURSE_ID
+		 left join
+		    exam_type t
+		 on  
+		     r.EXAM_TYPE_ID=t.EXAM_TYPE_ID
+		  left join
+			teacher a
+		on
+			r.TEACHER_ID = a.TEACHER_ID 
+		where
+		    1=1
+		   <if test="teacher_id != null and teacher_id != ''">
+		and
+			r.TEACHER_ID = #{teacher_id}
+		</if>  
+		<if test ="course_name != null and course_name != '' ">
+		And
+			e.COURSE_NAME=#{course_name}
+		</if>
+	</select>
+	
+		<select id="getClasses" resultType="String">
+		select
+			CLASS_ID
+		from
+			exam_req_class
+		where
+			REQ_ID = #{req_id}
+	</select>
+	<select id="getClassnames" resultType="String">
+		select
+			CLASS_NAME
+		from
+			class a
+		left join
+			exam_req_class n
+		on
+			n.CLASS_ID = a.CLASS_ID
+		where
+			REQ_ID = #{req_id}
+	</select>
+	
+	<select id="getInviNumber" resultType="int">
+		select
+			count(*)
+		from
+			exam_info i
+		left join
+			teacher_exam t
+		on
+			i.ROOM_ID = t.ROOM_ID
+		where
+			t.TEACHER_ID = #{teacher_id}
+	</select>
+</mapper>

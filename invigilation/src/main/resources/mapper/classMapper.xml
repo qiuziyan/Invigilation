@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.ClassDao">
+	<resultMap id = "class" type = "com.org.model.Classes">
+		<id property="class_id" column="class_id"></id>
+		<result property="class_name" column="class_name"></result>
+		<result property="class_grade" column="class_grade"></result>
+		<result property="class_contact" column="class_contact"></result>
+		<result property="class_phone" column="class_phone"></result>
+		<association property="depart" javaType="com.org.model.Department">
+			<id property="dept_id" column="dept_id"></id>
+			<result property="dept_name" column="dept_name"></result>
+		</association>
+	</resultMap>
+	<select id="UniquenessCheckForClass" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			class
+		where
+			CLASS_ID = #{class_id}
+	</select>
+	
+	<insert id = "addClass" parameterType="com.org.model.Classes" keyProperty="class_id" useGeneratedKeys="true">
+		insert into 
+			class
+		(
+			DEPT_ID,
+			CLASS_NAME,
+			CLASS_GRADE,
+			CLASS_CONTACT,
+			CLASS_PHONE,
+			CLASS_DESC
+		)
+		values(
+			#{depart.dept_id},
+			#{class_name},
+			#{class_grade},
+			#{class_contact},
+			#{class_phone},
+			'null'
+		)
+	</insert>
+	<update id = "modifyClass" parameterType="com.org.model.Classes">
+		update class
+		set 
+			DEPT_ID =#{depart.dept_id},
+			CLASS_NAME =#{class_name},
+			CLASS_GRADE =#{class_grade},
+			CLASS_CONTACT =#{class_contact},
+			CLASS_PHONE =#{class_phone}
+		where
+			CLASS_ID = #{class_id}
+	</update>
+	
+	<select id = "getClassList" resultMap="class">
+		select 
+			t.CLASS_ID       as    class_id,
+			t.CLASS_NAME     as    class_name,
+			t.CLASS_GRADE    as    class_grade,
+			t.CLASS_CONTACT  as    class_contact,
+			t.CLASS_PHONE    as    class_phone,
+			d.DEPT_ID        as    dept_id,
+			d.DEPT_NAME      as    dept_name
+		from
+			class t
+		left join
+			department d
+		ON
+			t.DEPT_ID=d.DEPT_ID
+		where 
+			1=1
+		<if test ="class_name != null and class_name != '' ">
+		And
+			t.CLASS_NAME=#{class_name}
+		</if>
+	</select>
+	<delete id = "delete">
+		delete from 
+			class 
+		where
+			CLASS_ID =#{class_id}
+	</delete>
+	<select id="getClass" resultMap="class">
+		select 
+			t.CLASS_ID       as    class_id,
+			t.CLASS_NAME     as    class_name,
+			t.CLASS_GRADE    as    class_grade,
+			t.CLASS_CONTACT  as    class_contact,
+			t.CLASS_PHONE    as    class_phone,
+			d.DEPT_ID        as    dept_id,
+			d.DEPT_NAME      as    dept_name
+		from
+			class t
+		left join
+			department d
+		ON
+			t.DEPT_ID = d.DEPT_ID
+		where 
+			t.CLASS_ID  = #{class_id}
+	</select>
+</mapper>

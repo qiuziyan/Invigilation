@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.SemesterDao">
+<select id ="getSemesterList" resultType="com.org.model.Semester">
+		select 
+		    s.SEMESTER_ID         as    semester_id,
+			s.SEMESTER_NAME       as    semester_name
+		from
+			semester s
+		where 
+			1=1
+		
+	</select>
+	
+	<select id = "getTypeList" resultType="com.org.model.Type">
+		select 
+		    e.EXAM_TYPE_ID       as    exam_type_id,
+			e.EXAM_TYPE       as    exam_type
+		from
+			exam_type e
+		where 
+			1=1
+	</select>
+	</mapper>

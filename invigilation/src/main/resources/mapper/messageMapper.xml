@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.MessageDao">
+<insert id = "addMessage" parameterType="com.org.model.Message" keyProperty="message_id" useGeneratedKeys="true">
+		insert into 
+			message
+		(
+			MSG_TITLE,
+			MSG_CONTENT,
+			USER_NAME,
+			CREATE_DATE
+		)
+		values(
+			#{msg_title},
+			#{msg_content},
+			#{user_name},
+			#{create_date}
+		)
+	</insert>
+	<select id = "getTitleList" resultType="com.org.model.Message">
+		select 
+			r.MESSAGE_ID   as    message_id,
+			r.MSG_TITLE    as    msg_title,
+			r.MSG_CONTENT  as    msg_content
+		from
+			message r
+		where 
+			1=1
+	</select>
+	<select id="getMessage" resultType = "com.org.model.Message">
+		select 
+			r.MSG_TITLE   as    msg_title,
+			r.MSG_CONTENT     as    msg_content
+		from
+			message r
+		where 
+			r.MESSAGE_ID = #{message_id}
+	</select>
+	</mapper>

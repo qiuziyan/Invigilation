@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.RoomDao">
+	
+	<select id="UniquenessCheckForRoom" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			classroom
+		where
+			ROOM_ID = #{room_id}
+	</select>
+	
+	<insert id = "addRoom" parameterType="com.org.model.Room" keyProperty="room_id" useGeneratedKeys="true">
+		insert into 
+			classroom
+		(
+			ROOM_NAME,
+			ACC_NUMBER,
+			IS_MEDIA,
+			ROOM_DESC
+		)
+		values(
+			#{room_name},
+			#{acc_number},
+			#{is_media},
+			'null'
+		)
+	</insert>
+	<update id = "modifyRoom" parameterType="com.org.model.Room">
+		update classroom
+		set 
+			ROOM_NAME=#{room_name},
+			ACC_NUMBER=#{acc_number},
+			IS_MEDIA=#{is_media}
+		where
+			ROOM_ID=#{room_id}
+	</update>
+	
+	<select id = "getRoomList" resultType="com.org.model.Room">
+		select 
+			r.ROOM_NAME   as    room_name,
+			r.ROOM_ID     as    room_id,
+			r.ACC_NUMBER  as    acc_number,
+			r.IS_MEDIA    as    is_media
+		from
+			classroom r
+		where 
+			1=1
+		<if test ="room_name != null and room_name != '' ">
+		And
+			r.ROOM_NAME = #{room_name}
+		</if>
+	</select>
+	<delete id = "delete">
+		delete from 
+			classroom 
+		where
+			ROOM_ID  = #{room_id}
+	</delete>
+	<select id="getRoom" resultType = "com.org.model.Room">
+		select 
+			r.ROOM_NAME   as    room_name,
+			r.ROOM_ID     as    room_id,
+			r.ACC_NUMBER  as    acc_number,
+			r.IS_MEDIA    as    is_media
+		from
+			classroom r
+		where 
+			r.ROOM_ID = #{room_id}
+	</select>
+	<select id="getBuildingList" resultType="com.org.model.Building">
+		SELECT
+			BUILDING_ID     as   building_id,
+			BUILDING_NAME   as   building_name,
+			PHONE  as   phone
+		FROM
+			building
+		where 
+			1=1
+	</select>
+</mapper>

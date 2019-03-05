@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.UserDao">
+	<select id ="Login" resultType ="int">
+		select
+			count(1)
+		from
+			user
+		where
+			USER_NAME = #{ID}
+		and
+			PASSWORD = #{password}
+		and 
+		    USER_TYPE=#{type}
+	</select>
+	<update id = "modifyUser" parameterType="com.org.model.User">
+		update user
+		set 
+			PASSWORD=#{password}
+		where
+			USER_NAME=#{user_name}
+	</update>
+	<select id="getUser" resultType = "com.org.model.User">
+		select 
+			r.USER_NAME     as    user_name,
+ 			r.PASSWORD     as    password
+		from
+			user r
+		where 
+			r.USER_NAME = #{user_name}
+	</select>
+</mapper>
