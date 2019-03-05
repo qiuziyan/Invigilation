@@ -10,9 +10,9 @@
         <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
                 <!-- 配置连接池属性 -->
                 <property name="driverClass" value="com.mysql.jdbc.Driver" />
-                <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/vehicleplatedata?useUnicode=true&amp;characterEncoding=utf-8"/>
-                <property name="user" value="sa"/>
-                <property name="password" value="coing" />
+                <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/project?useUnicode=true&amp;characterEncoding=utf-8"/>
+                <property name="user" value="root"/>
+                <property name="password" value="971213" />
 
                 <!-- c3p0连接池的私有属性 -->
                 <property name="maxPoolSize" value="30" />
@@ -39,7 +39,7 @@
                 <!-- 注入sqlSessionFactory -->
                 <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
                 <!-- 给出需要扫描Dao接口包 -->
-                <property name="basePackage" value="cn.njit.invigilation.dao" />
+                <property name="basePackage" value="com.org.dao" />
         </bean>
         <!-- 事务处理 -->
         <bean id="transactionManager"  
