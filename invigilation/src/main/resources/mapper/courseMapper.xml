@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.CourseDao">
+	
+	<select id="UniquenessCheckForCourse" resultType="int">
+		SELECT
+			count(1)
+		FROM
+			course
+		where
+			course.COURSE_ID = #{course_id}
+	</select>
+	
+	<insert id = "addCourse" parameterType="com.org.model.Course" keyProperty="course_id" useGeneratedKeys="true">
+		insert into 
+			course
+		(
+			COURSE_NAME,
+			IS_EXAMED,
+			COURSE_DESC
+		)
+		values(
+			#{course_name},
+			#{is_examed},
+			'null'
+		)
+	</insert>
+	<update id = "modifyCourse" parameterType="com.org.model.Course">
+		update course
+		set 
+			COURSE_NAME=#{course_name},
+			IS_EXAMED=#{is_examed}
+		where
+			COURSE_ID=#{course_id}
+	</update>
+	
+	<select id = "getCourseList" resultType="com.org.model.Course">
+		select 
+			r.COURSE_NAME   as    course_name,
+			r.COURSE_ID     as    course_id,
+			r.IS_EXAMED     as    is_examed
+		from
+			course r
+		where 
+			1=1
+		<if test ="course_name!= null and course_name!= '' ">
+		And
+			r.COURSE_NAME = #{course_name}
+		</if>
+	</select>
+	
+	<select id = "getcourseList" resultType="com.org.model.Course">
+		select 
+			r.COURSE_NAME   as    course_name,
+			r.COURSE_ID     as    course_id
+		from
+			course r
+		left join
+		    teacher_course t
+		on
+		    t.COURSE_ID=r.COURSE_ID
+		where 
+			t.SEMESTER_ID = #{semester_id}
+		and
+		    t.TEACHER_ID=#{teacher_id}
+	</select>
+	
+	<select id = "getclassList" resultType="com.org.model.Classes">
+		select 
+			r.CLASS_NAME   as    class_name,
+			r.CLASS_ID     as    class_id
+		from
+			class r
+		left join
+		    class_course t
+		on
+		    t.CLASS_ID=r.CLASS_ID
+		where 
+			t.SEMESTER_ID = #{semester_id}
+		and
+		    t.COURSE_ID=#{course_id}
+	</select>
+	
+	<delete id = "delete">
+		delete from 
+			course
+		where
+			COURSE_ID  = #{course_id}
+	</delete>
+	<select id="getCourse" resultType = "com.org.model.Course">
+		select 
+			r.COURSE_NAME   as    course_name,
+			r.COURSE_ID     as    course_id,
+ 			r.IS_EXAMED     as    is_examed
+		from
+			course r
+		where 
+			r.COURSE_ID = #{course_id}
+	</select>
+</mapper>

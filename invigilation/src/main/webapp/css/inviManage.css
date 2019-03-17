@@ -1,0 +1,134 @@
+@CHARSET "UTF-8";
+a {
+	cursor:pointer;
+}
+body{
+	width : 1063px;
+	font-family:Helvetica, Tahoma, Arial;
+	line-height: 1.42857143;
+	background-color: #f0f2f5;
+	height: 100%;
+}
+.top-bar{
+	width : 100%;
+	height: 50px;
+	background: #1E1E1E;
+}
+.top-bar .title{
+	color : #fff;
+	font-size : 32px;
+	float : left;
+	margin: 0 50px;
+}
+.top-bar-right {
+	float :right;
+	color : #fff;
+	margin: 10px 20px 0 50px;
+}
+.top-bar-right .loginout{
+	color :  #72ACE3;
+}
+.top-bar-right .user{
+	width : 20px;
+	height : 20px;
+	margin-top : -2px;
+	margin-right : 6px;
+}
+.top-bar-right  a{
+	font-size : 16px;
+	color : #fff;
+}
+.nav-bar {
+	width : 200px;
+	background: #3C3C3C;
+	float : left;
+	min-height : 650px;
+	
+}
+.nav-bar .memu-2{
+	display : none;
+	font-size : 14px;
+}
+.nav-bar .memu-2 li a {
+	background : #1E1E1E;
+	border :1;
+	width : 80%;
+	margin-left : 10px;
+	padding: 22px 38px;
+}
+.nav-bar .memu-2 li a:hover{
+	background : #1E1E1E;
+}
+.nav-bar li a{
+	    padding: 22px 48px;
+}
+.nav-pills>li.active>a {
+    background: #3e77ab;
+    transition: -0.8s all ease-in-out;
+    outline: none;
+    color: #FFF;
+}
+.nav-pills>li>a{
+	background: #3C3C3C;
+	color :#d9d9d9;
+}
+nav-pills>li>a:focus, .nav-pills>li>a:hover{
+	background: #1E1E1E;
+    transition: -0.8s all ease-in-out;
+    outline: none;
+    color: #FFF;
+}
+.content {
+	width : 90%;
+	margin:0 auto;
+	position:relative;
+	height : 300px;
+}
+.modle {
+	float : left;
+	margin: 10px 0 0 90px;
+}
+.message{
+	float : right;
+    margin: 10px 700px 0 0;
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    width: 155px;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    border: 0px solid #ddd;
+    background-color:#f0f2f5;
+}
+.panel-body {
+    padding: 0px 30px;
+}
+.time input{
+	margin: 0px;
+    font: inherit;
+    color: inherit;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.course-box,.select,.time{
+	float:left;
+	margin-right : 10px;
+}
+.btn2{
+	float:right;
+	margin-right : 10px;
+}
+#frame{
+	width : ;
+	height : 650px;
+}
+.Time{
+	width : 143px;
+	display : inline;
+}
+.number{
+	float : right;
+}

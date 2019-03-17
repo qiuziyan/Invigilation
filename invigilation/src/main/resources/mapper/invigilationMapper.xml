@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.org.dao.InvigilationDao">
+	<resultMap type="com.org.model.Exam" id="inviMap">
+		<id column="exam_id" property="exam_id"></id>
+		<result column="exam_name" property="exam_name"/>
+		<result column="start_date" property="start_date"/>
+		<result column="end_date" property="end_date"/>
+		<result column="week" property="week"/>
+		<association property="room" javaType="com.org.model.Room">
+			<id column="room_id" property="room_id"/>
+			<result column="room_name" property="room_name"/>
+		</association>
+		<association property="course" javaType="com.org.model.Course">
+			<id column="course_id" property="course_id"/>
+			<result column="course_name" property="course_name"/>
+		</association>
+		<association property="type" javaType="com.org.model.Type">
+			<id column="exam_type_id" property="exam_type_id"/>
+			<result column="exam_type" property="exam_type"/>
+		</association>
+		<association property="semester" javaType="com.org.model.Semester">
+			<id column="semester_id" property="semester_id"/>
+			<result column="semester_name" property="semester_name"/>
+		</association>
+	</resultMap>
+	<insert id="addInvigilate" parameterType="com.org.model.Exam" keyProperty="exam_id" useGeneratedKeys="true">
+		insert into
+			exam_info
+			(
+			    SEMESTER_ID,
+			    EXAM_NAME,
+				COURSE_ID,
+				USER_NAME,
+				EXAM_TYPE_ID,
+				CREATE_DATE,
+				START_DATE,
+				WEEK,
+				END_DATE,
+				ROOM_ID
+			)values(
+			    #{semester.semester_id},
+			    #{exam_name},
+				#{course.course_id},
+				#{user_name},
+				#{type.exam_type_id},
+				#{create_date},
+				#{start_date},
+				#{week},
+				#{end_date},
+				#{room.room_id}
+			)
+	</insert>
+	
+	<insert id="addTeaRel">
+		insert into
+			teacher_exam
+			(
+				ROOM_ID,
+				TEACHER_ID
+			)values
+			<foreach collection="teachers" item = "teacher" separator=",">
+				(#{room_id}, #{teacher})
+			</foreach>
+	</insert>
+	
+	<insert id="addClassRel">
+		insert into
+			class_exam
+			(
+				ROOM_ID,
+				CLASS_ID
+			)values
+			<foreach collection="classes" item = "class" separator=",">
+				(#{room_id}, #{class})
+			</foreach>
+	</insert>
+	
+	<select id="getInvigilationList" resultMap="inviMap">
+		select
+		    DISTINCT
+		  	i.EXAM_ID               as    exam_id,
+			i.EXAM_NAME             as    exam_name,
+			i.WEEK                  as    week,
+			DATE_FORMAT(i.START_DATE,'%Y-%m-%d %H:%i')  as    start_date,
+			DATE_FORMAT(i.END_DATE,'%H:%i')             as    end_date,
+			r.ROOM_ID          as    room_id,
+			r.ROOM_NAME        as    room_name,
+	    	c.COURSE_ID        as    course_id,
+			c.COURSE_NAME      as    course_name,
+			s.SEMESTER_ID      as    semester_id,
+			s.SEMESTER_NAME    as    semester_name,
+			t.EXAM_TYPE_ID     as    exam_type_id,
+			t.EXAM_TYPE        as    exam_type 
+		from
+			exam_info i
+	  left join
+		    teacher_exam  tea
+		on
+		    i.ROOM_ID=tea.ROOM_ID
+		left join
+		    class_exam  e
+		on
+		    i.ROOM_ID=e.ROOM_ID
+		left join
+		    semester s
+		 on  
+		     i.SEMESTER_ID=s.SEMESTER_ID
+		 left join
+		    course c
+		 on  
+		     i.COURSE_ID=c.COURSE_ID
+		 left join
+		    exam_type t
+		 on  
+		     i.EXAM_TYPE_ID=t.EXAM_TYPE_ID
+		 left join
+		    classroom r
+		 on  
+		     i.ROOM_ID=r.ROOM_ID
+		  left join
+			class cl
+		on
+			e.CLASS_ID = cl.CLASS_ID 
+		where
+		    1=1
+	 	<if test ="class_name != null and class_name != '' ">
+		  and
+		   cl.CLASS_NAME like #{class_name}
+		   </if>
+		   <if test="teacher_id != null and teacher_id != ''">
+		and
+			tea.TEACHER_ID = #{teacher_id}
+		</if>  
+		<if test="course_name != null and course_name != ''">
+		and
+			c.COURSE_NAME = #{course_name}
+		</if>  
+	</select>
+	<select id="getClasses" resultType="String">
+		select
+			CLASS_ID
+		from
+			class_exam
+		where
+			ROOM_ID = #{room_id}
+	</select>
+	<select id="getClassName" resultType="String">
+		select
+			CLASS_NAME
+		from
+			class a
+		left join
+			class_exam n
+		on
+			n.CLASS_ID = a.CLASS_ID
+		where
+			ROOM_ID = #{room_id}
+	</select>
+  <select id="getTeachers" resultType="String">
+		select
+			TEACHER_ID
+		from
+			teacher_exam
+		where
+			ROOM_ID = #{room_id}
+	</select>
+	<select id="getTeacherName" resultType="String">
+		select
+			TEACHER_NAME
+		from
+			teacher t
+		left join
+			teacher_exam e
+		on
+			e.TEACHER_ID = t.TEACHER_ID
+		where
+			ROOM_ID = #{room_id}
+	</select>
+	<select id="getclasses" resultType="String">
+		select
+			CLASS_ID
+		from
+			exam_req_class
+		where
+			REQ_ID = #{req_id}
+	</select>
+	<select id="getClassnames" resultType="String">
+		select
+			CLASS_NAME
+		from
+			class a
+		left join
+			exam_req_class n
+		on
+			n.CLASS_ID = a.CLASS_ID
+		where
+			REQ_ID = #{req_id}
+	</select>
+	<resultMap type="com.org.model.Req" id="Req">
+		<id column="req_id" property="req_id"></id>
+		<result column="req_date" property="req_date"/>
+		<result column="status" property="status"/>
+		<association property="teacher" javaType="com.org.model.Teacher">
+			<id column="teacher_id" property="teacher_id"/>
+			<result column="teacher_name" property="teacher_name"/>
+		</association>
+		<association property="course" javaType="com.org.model.Course">
+			<id column="course_id" property="course_id"/>
+			<result column="course_name" property="course_name"/>
+		</association>
+		<association property="type" javaType="com.org.model.Type">
+			<id column="exam_type_id" property="exam_type_id"/>
+			<result column="exam_type" property="exam_type"/>
+		</association>
+	</resultMap>
+	<select id="getRequestList" resultMap="Req">
+		select
+		    DISTINCT
+		  	r.REQ_ID               as    req_id,
+			DATE_FORMAT(r.REQ_DATE,'%Y-%m-%d')  as    req_date,
+			r.STATUS           as    status,
+	    	e.COURSE_ID        as    course_id,
+			e.COURSE_NAME      as    course_name,
+			t.EXAM_TYPE_ID     as    exam_type_id,
+			t.EXAM_TYPE        as    exam_type ,
+			a.TEACHER_ID       as    teacher_id,
+			a.TEACHER_NAME     as    teacher_name
+		from
+			exam_req r
+	  left join
+		    exam_req_class c
+		on
+		    r.REQ_ID=c.REQ_ID
+		 left join
+		    course e
+		 on  
+		     r.COURSE_ID=e.COURSE_ID
+		 left join
+		    exam_type t
+		 on  
+		     r.EXAM_TYPE_ID=t.EXAM_TYPE_ID
+		  left join
+			teacher a
+		on
+			r.TEACHER_ID = a.TEACHER_ID
+	    left join
+			class cl
+		on
+			cl.CLASS_ID = c.CLASS_ID 
+			 
+		where
+		    1=1  
+		<if test ="class_name != null and class_name != '' ">
+		And
+			cl.CLASS_NAME=#{class_name}
+		</if>
+	</select>
+	<select id="getClassList" resultType="com.org.model.Classes">
+		select
+		  	a.CLASS_ID      as     class_id,
+		  	a.CLASS_NAME    as     class_name
+		from
+			exam_req_class c
+	  left join
+		    class a
+		on
+		    c.CLASS_ID=a.CLASS_ID 
+		where
+			c.REQ_ID=#{req_id}
+	</select>
+	<select id="getRequest" resultMap="Req">
+		select
+			DISTINCT
+			t.EXAM_TYPE_ID         as    exam_type_id,
+			t.EXAM_TYPE            as    exam_type,
+			c.COURSE_ID            as    course_id,
+			c.COURSE_NAME          as    course_name,
+			e.TEACHER_ID           as    teacher_id,
+			e.TEACHER_NAME         as    teacher_name,
+			r.REQ_DATE             as    req_date,
+			r.STATUS               as    status
+		from
+			exam_req r
+		left join
+			exam_type t
+		on
+			r.EXAM_TYPE_ID = t.EXAM_TYPE_ID
+		left join
+			course c
+		on
+			r.COURSE_ID = c.COURSE_ID
+	    left join
+			teacher e
+		on
+			r.TEACHER_ID = e.TEACHER_ID
+		where
+			r.REQ_ID =#{req_id}
+	</select>
+	<update id = "updateStatus" parameterType="com.org.model.Req">
+		update exam_req
+		set
+			STATUS =1
+		where
+			REQ_ID= #{req_id}
+	</update>
+	<select id="getInvigilate" resultMap="inviMap">
+		select
+			 DISTINCT
+		  	i.EXAM_ID               as    exam_id,
+			i.EXAM_NAME             as    exam_name,
+			i.WEEK                  as    week,
+			DATE_FORMAT(i.START_DATE,'%Y-%m-%d %H:%i')  as    start_date,
+			DATE_FORMAT(i.END_DATE,'%H:%i')             as    end_date,
+			r.ROOM_ID          as    room_id,
+			r.ROOM_NAME        as    room_name,
+	    	c.COURSE_ID        as    course_id,
+			c.COURSE_NAME      as    course_name,
+			s.SEMESTER_ID      as    semester_id,
+			s.SEMESTER_NAME    as    semester_name,
+			t.EXAM_TYPE_ID     as    exam_type_id,
+			t.EXAM_TYPE        as    exam_type 
+		from
+			exam_info i
+	  left join
+		    teacher_exam  tea
+		on
+		    i.ROOM_ID=tea.ROOM_ID
+		left join
+		    class_exam  e
+		on
+		    i.ROOM_ID=e.ROOM_ID
+		left join
+		    semester s
+		 on  
+		     i.SEMESTER_ID=s.SEMESTER_ID
+		 left join
+		    course c
+		 on  
+		     i.COURSE_ID=c.COURSE_ID
+		 left join
+		    exam_type t
+		 on  
+		     i.EXAM_TYPE_ID=t.EXAM_TYPE_ID
+		 left join
+		    classroom r
+		 on  
+		     i.ROOM_ID=r.ROOM_ID
+		where
+			i.EXAM_ID =#{exam_id}
+	</select>
+	<delete id="deleteTeaRel">
+		delete from
+			teacher_exam
+		where
+			ROOM_ID = #{room_id}
+	</delete>
+	<delete id="deleteClassRel">
+		delete from
+			class_exam
+		where
+			ROOM_ID = #{room_id}
+	</delete>
+	<update id="modifyInvigilate">
+		update 
+			exam_info
+		set
+		    SEMESTER_ID =  #{semester.semester_id},
+		    EXAM_NAME   =  #{exam_name},
+		    EXAM_TYPE_ID=  #{type.exam_type_id},
+		    CREATE_DATE =  #{create_date},
+			START_DATE  =  #{start_date},
+			WEEK        =  #{week},
+			END_DATE    =  #{end_date},
+			ROOM_ID     =  #{room.room_id}
+		where
+			EXAM_ID     =  #{exam_id}
+	</update>
+</mapper>
