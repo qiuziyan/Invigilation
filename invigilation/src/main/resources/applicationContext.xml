@@ -23,6 +23,8 @@
     <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 
-    <bean id="loginServiceImpl" class="com.org.service.impl.loginServiceImpl"></bean>
-    <bean id="courseServiceImpl" class="com.org.service.impl.CourseServiceImpl"></bean>
+    <bean id = "multipartResolver" class = "org.springframework.web.multipart.commons.CommonsMultipartResolver">
+   	<property name="defaultEncoding" value="utf-8"/>
+   	<property name="maxUploadSize" value="5240880"/>
+   </bean>
 </beans>

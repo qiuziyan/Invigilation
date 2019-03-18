@@ -8,7 +8,7 @@ import com.org.model.Classes;
 import com.org.model.Exam;
 import com.org.model.Req;
 
-@Service
+
 public interface InvigilationService {
 	void addInvigilate(Exam invi) throws Exception;
 	List<Exam> getInvigilationList(String class_name, Integer teacher_id,String course_name);

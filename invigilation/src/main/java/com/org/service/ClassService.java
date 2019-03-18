@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.org.model.Classes;
-@Service
+
 public interface ClassService {
 	String UniquenessCheckForClass(Integer class_id);
 

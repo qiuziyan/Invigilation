@@ -2,7 +2,7 @@ package com.org.service;
 
 import org.springframework.stereotype.Service;
 
-@Service
+
 public interface RoomService {
 	String UniquenessCheckForRoom(String room_id);
 

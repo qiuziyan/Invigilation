@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.org.model.Department;
 
 import com.org.model.Classes;
-@Service
+
 public interface DepartService {
 	String UniquenessCheckForDept(Integer dept_id);
 

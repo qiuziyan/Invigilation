@@ -1,6 +1,8 @@
 package com.org.controller;
 
+
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.org.model.Room;
 import com.org.service.RoomService;
+import com.org.util.ExcelUtils;
 @Controller
 public class Roomcontroller {
 	@Autowired
@@ -58,5 +63,14 @@ public class Roomcontroller {
 	public String getBuildingList(){
 		System.out.print(roomService.getBuildingList());
 		return roomService.getBuildingList();
+	}
+	//上传文件 批量导入教室
+	@RequestMapping(value = "room/AddRooms", method=RequestMethod.POST)
+	@ResponseBody
+	public String AddRooms(@RequestParam("file") MultipartFile file){
+		System.out.println(file.getOriginalFilename());
+		List<Room> roomList = new ExcelUtils().getExcelInfo(file.getOriginalFilename(), file);
+		System.out.println(roomList);
+		return "上传成功";
 	}
 }

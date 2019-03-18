@@ -9,7 +9,7 @@ import com.org.model.Freetime;
 import com.org.model.Req;
 import com.org.model.Teacher;
 
-@Service
+
 public interface TeacherService {
 	String UniquenessCheckForTeacher(String teacher_no);
 

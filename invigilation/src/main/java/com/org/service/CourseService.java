@@ -2,7 +2,7 @@ package com.org.service;
 
 import org.springframework.stereotype.Service;
 
-@Service
+
 public interface CourseService {
 	String UniquenessCheckForCourse(Integer course_id);
 	String addCourse(String info);

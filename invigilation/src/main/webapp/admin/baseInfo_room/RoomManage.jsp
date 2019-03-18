@@ -42,7 +42,8 @@
 		                        </div>
 		                        <div class="btn2" style="text-align:left;">
 		                            <button type="button" style="width:100px" id="btn_query" class="btn btn-primary">查询</button>
-		                       		<button type="button" style="width:100px" id="btn_add" data-toggle="modal" data-target="#myModal" class="btn btn-primary">新增课程</button>
+		                       		<button type="button" style="width:100px" id="btn_add" data-toggle="modal" data-target="#myModal" class="btn btn-primary">新增教室</button>
+		                       		<button type="button" style="width:100px" id="btn_batchAdd" class="btn btn-primary" data-toggle="modal" data-target="#batchaModal" class="btn btn-primary">批导入</button>
 		                        </div>
 		                    </div>
 		                </form>
@@ -153,6 +154,29 @@
       <div class="modal-footer">
        <button type="button" class="btn btn-primary" id = "buttonM">确认</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>       
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 上传附件model -->
+<div class="modal fade " id="batchaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">上传附件</h4>
+      </div>
+      <div class="modal-body">
+        <div class="content">
+			<form id="upload" enctype="multipart/form-data" method="post"> 
+				 <input type="file" name="file" id="pic"/> 
+				 <input type="button" value="提交" onclick="uploadPic();"/>  
+			</form>
+		</div>
+      </div>
+      <div class="modal-footer">
+       <button type="button" class="btn btn-primary" id = "button">确认</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -393,6 +417,26 @@ function deleteT(room_id){
 	            	alert("初始化失败");
 	            }
 			}) 
-	};
+		};
+		//上传附件
+		function uploadPic() {   
+			var form = document.getElementById('upload'), 
+			  formData = new FormData(form); 
+			  $.ajax({ 
+			   url:"<%=path%>/service/room/AddRooms",   
+			   type:"post", 
+			   data:formData, 
+			   processData:false, 
+			   contentType:false, 
+			   success:function(res){ 
+				   alert(res);
+			   }, 
+			   error:function(err){ 
+			    alert("网络连接失败,稍后重试",err); 
+			   } 
+			  
+			  }) 
+			  
+			 }
 	</script>
 </html>
