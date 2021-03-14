@@ -23,6 +23,6 @@ public class TestController {
 		return new ModelAndView("show","name","name") ;
 	}
 	public String test4() {
-		return "下班了 吃晚饭。";
+		return "下班了 吃晚饭00000。";
 	}
 }
