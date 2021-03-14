@@ -15,14 +15,14 @@ import cn.njit.invigilation.dao.Dao;
 public class TestController {
 	@Autowired
 	private Dao dao;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(TestController.class);
 	private int i;
 	@RequestMapping("/test")
-	public ModelAndView test() {	
+	public ModelAndView test() {
 		return new ModelAndView("show","name","name") ;
 	}
 	public String test4() {
-		return "下班了 吃晚饭。";
+		return "下班了 吃晚饭...。";
 	}
 }
